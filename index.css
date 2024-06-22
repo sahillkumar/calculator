@@ -20,6 +20,24 @@ body {
   border: 1px solid #2c2e2f;
   height: 72px;
   border-radius: 8px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-family: Arial, sans-serif;
+}
+
+.resultRow {
+  text-align: right;
+  font-size: 20px;
+  float: left;
+  bottom: 0px;
+  position: relative;
+  padding: 8px;
+}
+
+.expressionRow {
+  /* background-color: #e8eaed; */
 }
 
 .buttonWrapper {
@@ -42,34 +60,34 @@ button {
   color: #e8eaed;
 }
 
-button#operator {
+button.operator {
   background: #5f6368;
   border: 1px solid #5f6368;
 }
 
-button#operator:hover {
+button.operator:hover {
   background: #70757a;
   border-color: #70757a;
 }
 
-button#operand {
+button.operand {
   background: #3c4043;
   border: 1px solid #3c4043;
 }
 
-button#operand:hover {
+button.operand:hover {
   background: #424548;
   border-color: #424548;
 }
 
-button#equals {
+button.equals {
   background: #8ab4f8;
   color: #202124;
   border: 1px solid #8ab4f8;
   font-weight: bold;
 }
 
-button#equals:hover {
+button.equals:hover {
   background: #aecbfa;
   border-color: #aecbfa;
 }
