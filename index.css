@@ -20,7 +20,7 @@ body {
   border: 1px solid #2c2e2f;
   height: 72px;
   border-radius: 8px;
-  color: white;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -30,14 +30,15 @@ body {
 .resultRow {
   text-align: right;
   font-size: 20px;
-  float: left;
-  bottom: 0px;
-  position: relative;
   padding: 8px;
+  color: white;
 }
 
 .expressionRow {
-  /* background-color: #e8eaed; */
+  text-align: right;
+  font-size: 13px;
+  padding: 8px;
+  color: #5f6368;
 }
 
 .buttonWrapper {

@@ -2,7 +2,7 @@ const buttonWrapper = document.querySelector(".buttonWrapper");
 const expressionRow = document.querySelector(".expressionRow");
 const resultRow = document.querySelector(".resultRow");
 let firstNumber = "";
-let operator;
+let operator = "";
 let secondNumber = "";
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -16,31 +16,51 @@ buttonWrapper.addEventListener("click", (e) => {
   const className = e.target.className;
   if (className === "operand") handleOperandInput(value);
   else if (className === "operator") handleOperatorInput(value);
-  else if (className === "equals") handleEqualsInput();
+  else if (className === "equals") handleEquals();
+  expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
 });
 
 const handleOperandInput = (inputValue) => {
-  resultRow.textContent += inputValue;
+  if (!operator || !firstNumber) {
+    firstNumber += inputValue;
+    resultRow.textContent = firstNumber;
+  } else {
+    secondNumber += inputValue;
+    resultRow.textContent = secondNumber;
+  }
 };
 
 const handleOperatorInput = (operatorInput) => {
-  if (!firstNumber) {
-    firstNumber = resultRow.textContent;
-  } else if (!secondNumber) {
-    secondNumber = resultRow.textContent;
-  }
+  operator = operatorInput;
 
+  // if (!operator) {
+  //   firstNumber = resultRow.textContent;
+  // } else {
+  //   secondNumber = resultRow.textContent;
+  // }
+
+  // operator = operatorInput;
   console.info({ firstNumber, secondNumber });
+};
 
-  switch (operatorInput) {
+const handleEquals = () => {
+  const result = evalauate(firstNumber, secondNumber, operator);
+  resultRow.textContent = result;
+  firstNumber = result;
+  operator = "";
+  secondNumber = "";
+};
+
+const evalauate = (a, b, op) => {
+  switch (op) {
     case "+":
-      break;
+      return add(a, b);
     case "-":
-      break;
+      return subtract(a, b);
     case "x":
-      break;
+      return mulitply(a, b);
     case "/":
-      break;
+      return divide(a, b);
     case "+/-":
       break;
     case "%":
@@ -52,8 +72,6 @@ const handleOperatorInput = (operatorInput) => {
       break;
   }
 };
-
-const handleEqualsInput = () => {};
 
 const generateButtons = () => {
   buttonsArray.forEach((rowArr, i) => {
