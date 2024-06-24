@@ -17,38 +17,66 @@ buttonWrapper.addEventListener("click", (e) => {
   if (className === "operand") handleOperandInput(value);
   else if (className === "operator") handleOperatorInput(value);
   else if (className === "equals") handleEquals();
-  expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
 });
 
 const handleOperandInput = (inputValue) => {
-  if (!operator || !firstNumber) {
+  if (!operator) {
     firstNumber += inputValue;
     resultRow.textContent = firstNumber;
   } else {
     secondNumber += inputValue;
     resultRow.textContent = secondNumber;
   }
+  expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
+};
+
+const defaultOperationFlow = (operatorInput) => {
+  if (!firstNumber) {
+    firstNumber = resultRow.textContent;
+  }
+  if (operator) {
+    const result = checkAndEvaluate();
+    if (result) {
+      resultRow.textContent = result;
+      expressionRow.textContent = result;
+      firstNumber = result;
+      secondNumber = "";
+    }
+  }
+  operator = operatorInput;
+  expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
 };
 
 const handleOperatorInput = (operatorInput) => {
-  operator = operatorInput;
-
-  // if (!operator) {
-  //   firstNumber = resultRow.textContent;
-  // } else {
-  //   secondNumber = resultRow.textContent;
-  // }
-
-  // operator = operatorInput;
-  console.info({ firstNumber, secondNumber });
+  switch (operatorInput) {
+    case "AC":
+      clearAll();
+      break;
+    case "CE":
+      clearEntry();
+      break;
+    default:
+      defaultOperationFlow(operatorInput);
+      break;
+  }
 };
 
+const clearEntry = () => {};
+
 const handleEquals = () => {
-  const result = evalauate(firstNumber, secondNumber, operator);
+  const result = checkAndEvaluate();
   resultRow.textContent = result;
-  firstNumber = result;
+  expressionRow.textContent = result;
+  firstNumber = "";
   operator = "";
   secondNumber = "";
+};
+
+const checkAndEvaluate = () => {
+  if (firstNumber && secondNumber && operator) {
+    return evalauate(firstNumber, secondNumber, operator);
+  }
+  return null;
 };
 
 const evalauate = (a, b, op) => {
@@ -71,6 +99,14 @@ const evalauate = (a, b, op) => {
     default:
       break;
   }
+};
+
+const clearAll = () => {
+  resultRow.textContent = 0;
+  firstNumber = "";
+  secondNumber = "";
+  operator = "";
+  expressionRow.textContent = "";
 };
 
 const generateButtons = () => {
