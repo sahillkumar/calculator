@@ -4,6 +4,7 @@ const resultRow = document.querySelector(".resultRow");
 let firstNumber = "";
 let operator = "";
 let secondNumber = "";
+let expression = "";
 
 document.addEventListener("DOMContentLoaded", () => {
   generateButtons();
@@ -13,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 buttonWrapper.addEventListener("click", (e) => {
   const value = e.target.value;
   if (!value) return;
+  expression += value;
   const className = e.target.className;
   if (className === "operand") handleOperandInput(value);
   else if (className === "operator") handleOperatorInput(value);
@@ -55,9 +57,30 @@ const handleOperatorInput = (operatorInput) => {
     case "CE":
       clearEntry();
       break;
+    case "%":
+      handlePercent();
+      break;
     default:
       defaultOperationFlow(operatorInput);
       break;
+  }
+};
+
+const handlePercent = () => {
+  if (!operator || (operator && !secondNumber)) {
+    firstNumber = firstNumber / 100;
+    resultRow.textContent = firstNumber;
+    expressionRow.textContent = firstNumber;
+    firstNumber = "";
+    operator = "";
+  } else {
+    secondNumber = secondNumber / 100;
+    resultRow.textContent = secondNumber;
+    expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
+
+    firstNumber = "";
+    operator = "";
+    secondNumber = "";
   }
 };
 
@@ -101,32 +124,31 @@ const evalauate = (a, b, op) => {
   }
 };
 
-const clearAll = () => {
-  resultRow.textContent = 0;
-  firstNumber = "";
-  secondNumber = "";
-  operator = "";
-  expressionRow.textContent = "";
-};
-
 const generateButtons = () => {
-  buttonsArray.forEach((rowArr, i) => {
+  buttonsArray.forEach((rowArr) => {
     const rowEl = document.createElement("div");
     rowEl.classList.add("buttonRow");
-    rowArr.forEach((key, j) => {
-      const button = document.createElement("button");
-      let className;
-      if (i === 0 || j === rowArr.length - 1) className = "operator";
-      else if (key === "=") className = "equals";
-      else className = "operand";
-      button.textContent = key;
-      button.value = key;
-      button.classList.add(className);
+    rowArr.forEach((key) => {
+      const button = addBtn(key);
       rowEl.appendChild(button);
     });
     buttonWrapper.appendChild(rowEl);
   });
 };
+
+function addBtn(key) {
+  const button = document.createElement("button");
+  let className;
+  if (operands.includes(key)) className = "operand";
+  else if (validOperations.includes(key)) className = "operator";
+  else if (clearingOperations.includes(key)) className = "clearingBtn";
+  else if (key === "=") className = "equals";
+  else className = "";
+  button.textContent = key;
+  button.value = key;
+  button.classList.add(className);
+  return button;
+}
 
 function add(a, b) {
   return a + b;
@@ -144,6 +166,14 @@ function divide(a, b) {
   return a / b;
 }
 
+function clearAll() {
+  resultRow.textContent = 0;
+  firstNumber = "";
+  secondNumber = "";
+  operator = "";
+  expressionRow.textContent = "";
+}
+
 const buttonsArray = [
   ["+/-", "%", "CE", "AC"],
   [7, 8, 9, "/"],
@@ -151,3 +181,7 @@ const buttonsArray = [
   [1, 2, 3, "-"],
   [0, ".", "=", "+"],
 ];
+
+const operands = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "."];
+const validOperations = ["+/-", "%", "/", "x", "-", "+"];
+const clearingOperations = ["CE", "AC"];

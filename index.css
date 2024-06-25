@@ -61,12 +61,14 @@ button {
   color: #e8eaed;
 }
 
-button.operator {
+button.operator,
+button.clearingBtn {
   background: #5f6368;
   border: 1px solid #5f6368;
 }
 
-button.operator:hover {
+button.operator:hover,
+button.clearingBtn:hover {
   background: #70757a;
   border-color: #70757a;
 }
