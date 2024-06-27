@@ -176,19 +176,23 @@ function addBtn(key) {
 }
 
 function add(a, b) {
-  return a + b;
+  const res = Number(a) + Number(b);
+  return Number(res.toFixed(4));
 }
 
 function subtract(a, b) {
-  return a - b;
+  const res = Number(a) - Number(b);
+  return Number(res.toFixed(4));
 }
 
 function mulitply(a, b) {
-  return a * b;
+  const res = Number(a) * Number(b);
+  return Number(res.toFixed(4));
 }
 
 function divide(a, b) {
-  return a / b;
+  const res = Number(a) / Number(b);
+  return Number(res.toFixed(4));
 }
 
 const buttonsArray = [
