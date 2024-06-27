@@ -4,7 +4,7 @@ const resultRow = document.querySelector(".resultRow");
 let firstNumber = "";
 let operator = "";
 let secondNumber = "";
-let expression = "";
+let lastClicked = "";
 
 document.addEventListener("DOMContentLoaded", () => {
   generateButtons();
@@ -14,57 +14,78 @@ document.addEventListener("DOMContentLoaded", () => {
 buttonWrapper.addEventListener("click", (e) => {
   const value = e.target.value;
   if (!value) return;
-  expression += value;
   const className = e.target.className;
-  if (className === "operand") handleOperandInput(value);
-  else if (className === "operator") handleOperatorInput(value);
-  else if (className === "equals") handleEquals();
+  switch (className) {
+    case "operand":
+      handleOperandInput(value);
+      break;
+    case "operator":
+      handleOperatorInput(value);
+      break;
+    case "clearingBtn":
+      handleClearingInput(value);
+      break;
+    case "equals":
+      handleEquals();
+      break;
+    default:
+      break;
+  }
+  lastClicked = className;
 });
 
-const handleOperandInput = (inputValue) => {
-  if (!operator) {
-    firstNumber += inputValue;
-    resultRow.textContent = firstNumber;
-  } else {
-    secondNumber += inputValue;
-    resultRow.textContent = secondNumber;
-  }
-  expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
+const handleClearingInput = (input) => {
+  if (input === "AC") clearAll();
+  else if (input === "CE") clearEntry();
 };
 
-const defaultOperationFlow = (operatorInput) => {
-  if (!firstNumber) {
-    firstNumber = resultRow.textContent;
+const handleOperandInput = (inputValue) => {
+  let resultRowStr = "";
+  if (!operator) {
+    firstNumber += inputValue;
+    resultRowStr = firstNumber;
+  } else {
+    if (lastClicked === "operator") secondNumber = "";
+    secondNumber += inputValue;
+    resultRowStr = secondNumber;
   }
-  if (operator) {
-    const result = checkAndEvaluate();
-    if (result) {
-      resultRow.textContent = result;
-      expressionRow.textContent = result;
-      firstNumber = result;
-      secondNumber = "";
-    }
-  }
-  operator = operatorInput;
+  resultRow.textContent = resultRowStr;
   expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
 };
 
 const handleOperatorInput = (operatorInput) => {
+  if (!firstNumber) {
+    firstNumber = resultRow.textContent;
+  }
+
   switch (operatorInput) {
-    case "AC":
-      clearAll();
-      break;
-    case "CE":
-      clearEntry();
-      break;
     case "%":
       handlePercent();
       break;
+    case "+/-":
+      handleNegative();
+      break;
     default:
-      defaultOperationFlow(operatorInput);
+      defaultArithmetricOperation(operatorInput);
       break;
   }
 };
+
+const defaultArithmetricOperation = (operation) => {
+  if (operator) {
+    const res = checkAndEvaluate();
+    if (res) {
+      firstNumber = res;
+      secondNumber = "";
+    }
+  } else {
+    firstNumber = resultRow.textContent;
+  }
+  operator = operation;
+  expressionRow.textContent = `${firstNumber} ${operator}`;
+};
+
+const handleNegative = () => {};
 
 const handlePercent = () => {
   if (!operator || (operator && !secondNumber)) {
@@ -77,14 +98,18 @@ const handlePercent = () => {
     secondNumber = secondNumber / 100;
     resultRow.textContent = secondNumber;
     expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
-
-    firstNumber = "";
-    operator = "";
-    secondNumber = "";
   }
 };
 
 const clearEntry = () => {};
+
+function clearAll() {
+  resultRow.textContent = 0;
+  firstNumber = "";
+  secondNumber = "";
+  operator = "";
+  expressionRow.textContent = "";
+}
 
 const handleEquals = () => {
   const result = checkAndEvaluate();
@@ -164,14 +189,6 @@ function mulitply(a, b) {
 
 function divide(a, b) {
   return a / b;
-}
-
-function clearAll() {
-  resultRow.textContent = 0;
-  firstNumber = "";
-  secondNumber = "";
-  operator = "";
-  expressionRow.textContent = "";
 }
 
 const buttonsArray = [
