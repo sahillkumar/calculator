@@ -1,10 +1,16 @@
 const buttonWrapper = document.querySelector(".buttonWrapper");
 const expressionRow = document.querySelector(".expressionRow");
 const resultRow = document.querySelector(".resultRow");
+
+DEFAULT_LAST_CLICKED_VALUE = {
+  class: "",
+  value: "",
+};
+
 let firstNumber = "";
 let operator = "";
 let secondNumber = "";
-let lastClicked = "";
+let lastClicked = { ...DEFAULT_LAST_CLICKED_VALUE };
 
 document.addEventListener("DOMContentLoaded", () => {
   generateButtons();
@@ -31,7 +37,10 @@ buttonWrapper.addEventListener("click", (e) => {
     default:
       break;
   }
-  lastClicked = className;
+  lastClicked = {
+    class: className,
+    value,
+  };
 });
 
 const handleClearingInput = (input) => {
@@ -40,17 +49,53 @@ const handleClearingInput = (input) => {
 };
 
 const handleOperandInput = (inputValue) => {
+  if (inputValue === ".") {
+    handleDecimalInput();
+    return;
+  }
   let resultRowStr = "";
   if (!operator) {
+    if (firstNumber === "0" && inputValue === "0") firstNumber = "";
     firstNumber += inputValue;
     resultRowStr = firstNumber;
   } else {
-    if (lastClicked === "operator") secondNumber = "";
+    if (
+      (secondNumber === "0" && inputValue === "0") ||
+      (lastClicked.class === "operator" && lastClicked.value !== "+/-")
+    ) {
+      secondNumber = "";
+    }
     secondNumber += inputValue;
     resultRowStr = secondNumber;
   }
   resultRow.textContent = resultRowStr;
   expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
+};
+
+const handleDecimalInput = () => {
+  // const inputValue = ".";
+  // let resultRowStr = "";
+  // if (!operator) {
+  //   if (firstNumber === "" && inputValue === ".") firstNumber = "0";
+  //   else if (
+  //     (firstNumber ?? "").toString()?.includes(".") &&
+  //     inputValue === "."
+  //   )
+  //     inputValue = "";
+  //   firstNumber += inputValue;
+  //   resultRowStr = firstNumber;
+  // } else {
+  //   if (secondNumber === "" && inputValue === ".") secondNumber = "0";
+  //   else if (
+  //     (secondNumber ?? "").toString()?.includes(".") &&
+  //     inputValue === "."
+  //   )
+  //     inputValue = "";
+  //   secondNumber += inputValue;
+  //   resultRowStr = secondNumber;
+  // }
+  // resultRow.textContent = resultRowStr;
+  // expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
 };
 
 const handleOperatorInput = (operatorInput) => {
@@ -85,7 +130,19 @@ const defaultArithmetricOperation = (operation) => {
   expressionRow.textContent = `${firstNumber} ${operator}`;
 };
 
-const handleNegative = () => {};
+const handleNegative = () => {
+  if (!operator && !secondNumber) {
+    if (firstNumber) {
+      firstNumber = -firstNumber;
+      resultRow.textContent = firstNumber;
+      expressionRow.textContent = firstNumber;
+    }
+  } else if (secondNumber) {
+    secondNumber = -secondNumber;
+    resultRow.textContent = secondNumber;
+    expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
+  }
+};
 
 const handlePercent = () => {
   if (!operator || (operator && !secondNumber)) {
@@ -101,19 +158,43 @@ const handlePercent = () => {
   }
 };
 
-const clearEntry = () => {};
+const trimlastChar = (num) => {
+  const numStr = num.toString();
+  return numStr?.substring(0, numStr.length - 1);
+};
+
+const clearEntry = () => {
+  if (secondNumber) {
+    secondNumber = trimlastChar(secondNumber);
+    resultRow.textContent = secondNumber;
+  } else if (operator) operator = "";
+  else {
+    firstNumber = trimlastChar(firstNumber);
+    if (!firstNumber) {
+      resultRow.textContent = 0;
+      lastClicked = {
+        ...DEFAULT_LAST_CLICKED_VALUE,
+      };
+    } else {
+      resultRow.textContent = firstNumber;
+    }
+  }
+  expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
+};
 
 function clearAll() {
-  resultRow.textContent = 0;
   firstNumber = "";
   secondNumber = "";
   operator = "";
+
+  lastClicked = { ...DEFAULT_LAST_CLICKED_VALUE };
   expressionRow.textContent = "";
+  resultRow.textContent = 0;
 }
 
 const handleEquals = () => {
   const result = checkAndEvaluate();
-  resultRow.textContent = result;
+  resultRow.textContent = result ?? 0;
   expressionRow.textContent = result;
   firstNumber = "";
   operator = "";
