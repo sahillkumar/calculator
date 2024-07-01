@@ -17,7 +17,58 @@ document.addEventListener("DOMContentLoaded", () => {
   resultRow.textContent = 0;
 });
 
-buttonWrapper.addEventListener("click", (e) => {
+document.body.addEventListener("keydown", ({ key }) => {
+  let event = null;
+
+  if (operands.includes(key)) {
+    event = {
+      target: {
+        value: key,
+        className: "operand",
+      },
+    };
+  } else if (keyAliasOperations.includes(key)) {
+    event = {
+      target: {
+        value: getOperatorValue(key),
+        className: "operator",
+      },
+    };
+  } else if (key === "Backspace") {
+    event = {
+      target: {
+        value: "CE",
+        className: "clearingBtn",
+      },
+    };
+  } else if (key === "c") {
+    event = {
+      target: {
+        value: "AC",
+        className: "clearingBtn",
+      },
+    };
+  } else if (key === "Enter") {
+    event = {
+      target: {
+        value: "=",
+        className: "equals",
+      },
+    };
+  } else event = null;
+  if (event) {
+    calculatorEventHandler(event);
+  }
+});
+
+const getOperatorValue = (operatorAlias) => {
+  const aliasIndex = keyAliasOperations.indexOf(operatorAlias);
+  return validOperations[aliasIndex];
+};
+
+buttonWrapper.addEventListener("click", calculatorEventHandler);
+
+function calculatorEventHandler(e) {
   const value = e.target.value;
   if (!value) return;
   const className = e.target.className;
@@ -41,7 +92,7 @@ buttonWrapper.addEventListener("click", (e) => {
     class: className,
     value,
   };
-});
+}
 
 const handleClearingInput = (input) => {
   if (input === "AC") clearAll();
@@ -73,29 +124,31 @@ const handleOperandInput = (inputValue) => {
 };
 
 const handleDecimalInput = () => {
-  // const inputValue = ".";
-  // let resultRowStr = "";
-  // if (!operator) {
-  //   if (firstNumber === "" && inputValue === ".") firstNumber = "0";
-  //   else if (
-  //     (firstNumber ?? "").toString()?.includes(".") &&
-  //     inputValue === "."
-  //   )
-  //     inputValue = "";
-  //   firstNumber += inputValue;
-  //   resultRowStr = firstNumber;
-  // } else {
-  //   if (secondNumber === "" && inputValue === ".") secondNumber = "0";
-  //   else if (
-  //     (secondNumber ?? "").toString()?.includes(".") &&
-  //     inputValue === "."
-  //   )
-  //     inputValue = "";
-  //   secondNumber += inputValue;
-  //   resultRowStr = secondNumber;
-  // }
-  // resultRow.textContent = resultRowStr;
-  // expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
+  let inputValue = ".";
+  let resultRowStr = "";
+  if (!operator) {
+    if (firstNumber === "" && inputValue === ".") firstNumber = "0";
+    else if (
+      (firstNumber ?? "").toString()?.includes(".") &&
+      inputValue === "."
+    )
+      inputValue = "";
+    firstNumber += inputValue;
+    resultRowStr = firstNumber;
+  } else {
+    if (lastClicked.class === "operator" && lastClicked.value !== "+/-")
+      secondNumber = "";
+    if (secondNumber === "" && inputValue === ".") secondNumber = "0";
+    else if (
+      (secondNumber ?? "").toString()?.includes(".") &&
+      inputValue === "."
+    )
+      inputValue = "";
+    secondNumber += inputValue;
+    resultRowStr = secondNumber;
+  }
+  resultRow.textContent = resultRowStr;
+  expressionRow.textContent = `${firstNumber} ${operator} ${secondNumber}`;
 };
 
 const handleOperatorInput = (operatorInput) => {
@@ -119,10 +172,9 @@ const handleOperatorInput = (operatorInput) => {
 const defaultArithmetricOperation = (operation) => {
   if (operator) {
     const res = checkAndEvaluate();
-    if (res) {
-      firstNumber = res;
-      secondNumber = "";
-    }
+    if (res === null) return;
+    firstNumber = res;
+    secondNumber = "";
   } else {
     firstNumber = resultRow.textContent;
   }
@@ -218,13 +270,6 @@ const evalauate = (a, b, op) => {
       return mulitply(a, b);
     case "/":
       return divide(a, b);
-    case "+/-":
-      break;
-    case "%":
-      break;
-    case "CE":
-      break;
-    case "AC":
     default:
       break;
   }
@@ -278,12 +323,14 @@ function divide(a, b) {
 
 const buttonsArray = [
   ["+/-", "%", "CE", "AC"],
-  [7, 8, 9, "/"],
-  [4, 5, 6, "x"],
-  [1, 2, 3, "-"],
-  [0, ".", "=", "+"],
+  ["7", "8", "9", "/"],
+  ["4", "5", "6", "x"],
+  ["1", "2", "3", "-"],
+  ["0", ".", "=", "+"],
 ];
 
-const operands = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "."];
+const operands = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."];
 const validOperations = ["+/-", "%", "/", "x", "-", "+"];
 const clearingOperations = ["CE", "AC"];
+
+const keyAliasOperations = ["n", "r", "d", "m", "s", "p"];
