@@ -1,6 +1,7 @@
 body {
   margin: 0;
   padding: 0;
+  font-family: Arial, sans-serif;
 }
 
 .container {
@@ -9,11 +10,37 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  gap: 32px;
 }
 
 .calculator {
   max-height: max-content;
   width: 50%;
+  margin-top: 80px;
+}
+
+.helpSection {
+  border: 1px solid #2c2e2f;
+  color: #5f6368;
+  width: 50%;
+  padding: 16px;
+  margin-top: 80px;
+}
+
+.helpSection > h4 {
+  margin: 0;
+  padding: 8px;
+  font-size: 18px;
+  text-align: center;
+}
+
+.helpSection > p {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-weight: bold;
 }
 
 .display {
@@ -23,7 +50,6 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  font-family: Arial, sans-serif;
 }
 
 .resultRow {
@@ -31,6 +57,9 @@ body {
   font-size: 32px;
   padding: 12px;
   color: white;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .expressionRow {
@@ -38,6 +67,9 @@ body {
   font-size: 20px;
   padding: 12px;
   color: #5f6368;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .buttonWrapper {

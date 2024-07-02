@@ -56,6 +56,7 @@ document.body.addEventListener("keydown", ({ key }) => {
       },
     };
   } else event = null;
+
   if (event) {
     calculatorEventHandler(event);
   }
@@ -333,4 +334,4 @@ const operands = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "."];
 const validOperations = ["+/-", "%", "/", "x", "-", "+"];
 const clearingOperations = ["CE", "AC"];
 
-const keyAliasOperations = ["n", "r", "d", "m", "s", "p"];
+const keyAliasOperations = ["n", "p", "d", "m", "s", "a"];
